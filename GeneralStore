@@ -1,0 +1,36 @@
+public class GeneralStoreTest {
+    private AppiumDriver driver;
+    private GeneralStoreApp app;
+    
+    @BeforeClass
+    public void setUp() throws MalformedURLException {
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, Config.PLATFORM_NAME);
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, Config.DEVICE_NAME);
+        capabilities.setCapability(MobileCapabilityType.APP_PACKAGE, Config.APP_PACKAGE);
+        capabilities.setCapability(MobileCapabilityType.APP_ACTIVITY, Config.APP_ACTIVITY);
+        driver = new AndroidDriver(new URL("http://0.0.0.0:4723/wd/hub"), capabilities);
+        app = new GeneralStoreApp(driver);
+    }
+    
+    @Test
+    public void testGeneralStoreApp() {
+        app.openApp();
+        app.navigateToHomeScreen();
+        app.verifyProductScreenIsDisplayed();
+        app.addProductsToCart();
+        app.verifyCartScreenIsDisplayed();
+        app.tapSendMeEmailsCheckbox();
+        app.tapVisitWebsiteButton();
+        app.searchForInWebsite("General Store");
+        app.navigateToHomeScreen();
+        // Verify that the General Store home screen is displayed
+        Assert.assertTrue(driver.findElement(By.id("toolbar_title")).getText().contains("General Store"));
+    }
+    
+    @AfterClass
+    public void tearDown() {
+        driver.quit();
+    }
+}
+
