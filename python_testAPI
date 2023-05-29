@@ -1,0 +1,19 @@
+import requests
+
+#GET request to API endpoint
+response = requests.get('https://datausa.io/api/data?drilldowns=Nation&measures=Population')
+
+# Process response
+data = response.json()['data']
+source = response.json()['source'][0]['annotations']['source_name']
+years = len(data)
+start_year = data[0]['Year']
+end_year = data[-1]['Year']
+growth_rates = [data[i+1]['Population'] / data[i]['Population'] for i in range(len(data)-1)]
+peak_growth = max(growth_rates) * 100
+peak_growth_year = data[growth_rates.index(max(growth_rates))+1]['Year']
+lowest_growth = min(growth_rates) * 100
+lowest_growth_year = data[growth_rates.index(min(growth_rates))+1]['Year']
+
+# Output data:
+According to Census Bureau, in 8 years from 2013 to 2020, peak population growth was 4.11% in 2015 and the lowest population increase was 0.70% in 2020.
