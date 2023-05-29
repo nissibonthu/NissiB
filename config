@@ -1,0 +1,9 @@
+public class Config {
+    public static final String PLATFORM_NAME = "Android";
+    public static final String DEVICE_NAME = "emulator-5554";
+    public static final String APP_PACKAGE = "com.android.generalstore";
+    public static final String APP_ACTIVITY = "com.android.generalstore.SplashActivity";
+    public static final String COUNTRY = "India";
+    public static final String NAME = "Nissi";
+    public static final String GENDER = "female";
+}
