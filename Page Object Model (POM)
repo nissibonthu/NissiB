@@ -1,0 +1,150 @@
+public class HomeScreen {
+    private final AppiumDriver driver;
+    private final By countryDropdown = By.id("spinnerCountry");
+    private final By countryOption = By.xpath("//android.widget.TextView[@text='" + Config.COUNTRY + "']");
+    private final By nameField = By.id("txtName");
+    private final By genderDropdown = By.id("spinnerGender");
+    private final By genderOption = By.xpath("//android.widget.TextView[@text='" + Config.GENDER + "']");
+    private final By letsShopButton = By.id("btnLetsShop");
+    
+    public HomeScreen(AppiumDriver driver) {
+        this.driver = driver;
+    }
+    
+    public void selectCountry() {
+        driver.findElement(countryDropdown).click();
+        driver.findElement(countryOption).click();
+    }
+    
+    public void enterUserInfo() {
+        driver.findElement(nameField).sendKeys(Config.NAME);
+        driver.findElement(genderDropdown).click();
+        driver.findElement(genderOption).click();
+    }
+    
+    public void tapLetsShopButton() {
+        driver.findElement(letsShopButton).click();
+    }
+}
+
+public class ProductScreen {
+    private final AppiumDriver driver;
+    private final By pg3Product = By.xpath("//android.widget.TextView[@text='PG 3']");
+    private final By nikeSFBProduct = By.xpath("//android.widget.TextView[@text='Nike SFB Jungle']");
+    private final By cartButton = By.id("cart");
+    
+    public ProductScreen(AppiumDriver driver) {
+        this.driver = driver;
+    }
+    
+    public void addProductsToCart() {
+        driver.findElement(pg3Product).click();
+        driver.findElement(nikeSFBProduct).click();
+    }
+    
+    public void tapCartButton() {
+        driver.findElement(cartButton).click();
+    }
+}
+
+public class CartScreen {
+    private final AppiumDriver driver;
+    private final By cartItems = By.id("cartList");
+    private final By totalAmount = By.id("totalAmount");
+    private final By sendMeEmailsCheckbox = By.id("chkBoxEmail");
+    private final By visitWebsiteButton = By.id("btnProceed");
+    
+    public CartScreen(AppiumDriver driver) {
+        this.driver = driver;
+    }
+    
+    public void verifyItemsAddedToCart() {
+        WebElement cartList = driver.findElement(cartItems);
+        List items = cartList.findElements(By.className("android.widget.TextView"));
+        Assert.assertEquals(items.get(0).getText(), "PG 3");
+        Assert.assertEquals(items.get(1).getText(), "Nike SFB Jungle");
+    }
+    
+    public void verifyTotalAmount() {
+        String expectedAmount = "$" + (90 + 120); // Assuming PG3 costs $90 and Nike SFB Jungle costs $120
+        String actualAmount = driver.findElement(totalAmount).getText();
+        Assert.assertEquals(actualAmount, expectedAmount);
+    }
+    
+    public void tapSendMeEmailsCheckbox() {
+        driver.findElement(sendMeEmailsCheckbox).click();
+    }
+    
+    public void tapVisitWebsiteButton() {
+        driver.findElement(visitWebsiteButton).click();
+    }
+}
+
+public class SearchScreen {
+    private final AppiumDriver driver;
+    private final By searchBox = By.id("searchView");
+    
+    public SearchScreen(AppiumDriver driver) {
+        this.driver = driver;
+    }
+    
+    public void searchFor(String query) {
+        driver.findElement(searchBox).sendKeys(query);
+        driver.pressKeyCode(AndroidKeyCode.ENTER);
+    }
+}
+
+public class GeneralStoreApp {
+    private final AppiumDriver driver;
+    private HomeScreen homeScreen;
+    private ProductScreen productScreen;
+    private CartScreen cartScreen;
+    private SearchScreen searchScreen;
+    
+    public GeneralStoreApp(AppiumDriver driver) {
+        this.driver = driver;
+        homeScreen = new HomeScreen(driver);
+        productScreen = new ProductScreen(driver);
+        cartScreen = new CartScreen(driver);
+        searchScreen = new SearchScreen(driver);
+    }
+    
+    public void openApp() {
+        driver.launchApp();
+    }
+    
+    public void navigateToHomeScreen() {
+        homeScreen.selectCountry();
+        homeScreen.enterUserInfo();
+        homeScreen.tapLetsShopButton();
+    }
+    
+    public void verifyProductScreenIsDisplayed() {
+        Assert.assertTrue(driver.findElement(productScreen.pg3Product).isDisplayed());
+        Assert.assertTrue(driver.findElement(productScreen.nikeSFBProduct).isDisplayed());
+    }
+    
+    public void addProductsToCart() {
+        productScreen.addProductsToCart();
+        productScreen.tapCartButton();
+    }
+    
+    public void verifyCartScreenIsDisplayed() {
+        cartScreen.verifyItemsAddedToCart();
+        cartScreen.verifyTotalAmount();
+    }
+    
+    public void tapSendMeEmailsCheckbox() {
+        cartScreen.tapSendMeEmailsCheckbox();
+    }
+    
+    public void tapVisitWebsiteButton() {
+        cartScreen.tapVisitWebsiteButton();
+    }
+    
+    public void searchForInWebsite(String query) {
+        searchScreen.searchFor(query);
+        driver.pressKeyCode(AndroidKeyCode.BACK);
+    }
+}
+
